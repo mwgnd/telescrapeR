@@ -1,6 +1,6 @@
 # telescrapeR
+Work in Progress.
 
-## Installation
 
 ## Installation
 
@@ -16,4 +16,27 @@ This package uses the Telegram API via the Python Telethon library, so you'll ne
 * You will get basic addresses as well as the api_id and api_hash parameters required for user authorization.
 * For the moment each number can only have one api_id connected to it.
 
-Source. (https://core.telegram.org/api/obtaining_api_id)
+Source: https://core.telegram.org/api/obtaining_api_id
+
+#### Demo
+
+``` r
+library(telescrapeR)
+
+# install the Telethon library in an Python virtual environment called "r-telescrapeR"
+install_telethon()
+
+# api credentials
+api_id <- 123456789
+api_hash <- "******************"
+
+# number of messages
+n = 100
+
+# channels to be scraped (vector of t.me urls)
+channels <- c("https://t.me/Spiegel_Online",
+              "https://t.me/corona_infokanal_bmg")
+
+df <- get_messages(channels, n = n, api_id, api_hash)
+
+```

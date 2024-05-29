@@ -7,9 +7,9 @@ client = TelegramClient('session_name', api_id, api_hash)
 async def scrape_messages(client, channel_id):
     messages = []
     async for message in client.iter_messages(channel_id, wait_time = 3, limit = n_limit):
-        #if message.raw_text is None:
-            #continue
-        #else:
+        if message.text is None:
+            continue
+        else:
             sender_id = message.peer_id.channel_id if message.is_channel else message.peer_id.user_id
             raw_text = "" if message.raw_text is None else message.raw_text.replace("\'", "\"")
             messages.append({
