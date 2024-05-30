@@ -16,7 +16,7 @@ get_messages <- function(x,
                          api_id,
                          api_hash,
                          n = 0,
-                         env = "r-telescraper") {
+                         env = "r-telescrapeR") {
   # use specified virtual environment
   reticulate::use_virtualenv(env)
   reticulate::py_run_string(glue("print('Using', '{env}', 'virtual enviroment')"))
