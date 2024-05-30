@@ -28,7 +28,8 @@ get_messages <- function(x,
   py$n_limit <- as.integer(n)
 
   # scrape messages with the python script
-  reticulate::py_run_file("scrape_messages.py")
+  py_script <- system.file("scrape_messages.py", package = "telescrapeR")
+  reticulate::py_run_file(py_script)
 
   # transform python to r
   transform_py <- py_to_r(py$all_messages)
