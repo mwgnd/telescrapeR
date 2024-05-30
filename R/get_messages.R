@@ -7,7 +7,7 @@
 #' @param api_id The API ID required for authentication.
 #' @param api_hash The API hash required for authentication.
 #' @param env The name of the Python virtual environment to be used, when not "r-telescrapeR
-#' @importFrom reticulate py py_run_file use_virtualenv py_to_r import
+#' @importFrom reticulate py py_run_file use_virtualenv py_to_r import r_to_py
 #' @importFrom glue glue
 #' @return A data frame with the following columns: channel_name, channel_id, title, message_id, message_views, date, sender_id, message_text
 #' @export
@@ -17,21 +17,15 @@ get_messages <- function(x,
                          api_id,
                          api_hash,
                          env = "r-telescraper") {
+  # use specified virtual environment
   reticulate::use_virtualenv(env)
+  reticulate::py_run_string(glue("print('Using', '{env}', 'virtual enviroment')"))
 
-  x_python <- glue::glue("[{paste(sprintf('\"%s\"', x), collapse = ', ')}]")
-
-  py_vars <- glue("
-channel_links = {x_python}
-api_id = '{api_id}'
-api_hash = '{api_hash}'
-n_limit = {n}
-")
-
-  # create python variables
-  reticulate::py_run_string(py_vars)
-
-
+  # assign python variables
+  py$channel_links <- x
+  py$api_id <- api_id
+  py$api_hash <- api_hash
+  py$n_limit <- as.integer(n)
 
   # scrape messages with the python script
   reticulate::py_run_file("inst/scrape_messages.py")

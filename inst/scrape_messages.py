@@ -41,7 +41,7 @@ def main(channel_links):
           messages_list = client.loop.run_until_complete(scrape_more_channels(client, channel_links))
         except telethon.errors.FloodWaitError as e:
           print("FloodWaitError: Sleep for " + str(e.seconds))
-          time.sleep(e.seconds)        
+          time.sleep(e.seconds)
     return messages_list
 
 # Call the function to get messages
