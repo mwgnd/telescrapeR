@@ -3,19 +3,19 @@
 #' This function sets the channel links, API ID, and API hash, and then retrieves messages from the specified channel using the provided API credentials.
 #'
 #' @param x Character vector containing the channel links.
-#' @param n Number of messages to be scraped
 #' @param api_id The API ID required for authentication.
 #' @param api_hash The API hash required for authentication.
+#' @param n Number of messages to be scraped. Defauls is 0, which means all.
 #' @param env The name of the Python virtual environment to be used, when not "r-telescrapeR
 #' @importFrom reticulate py py_run_file use_virtualenv py_to_r import r_to_py
 #' @importFrom glue glue
-#' @return A data frame with the following columns: channel_name, channel_id, title, message_id, message_views, date, sender_id, message_text
+#' @return Returns a data frame.
 #' @export
 #'
 get_messages <- function(x,
-                         n,
                          api_id,
                          api_hash,
+                         n = 0,
                          env = "r-telescraper") {
   # use specified virtual environment
   reticulate::use_virtualenv(env)

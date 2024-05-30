@@ -4,16 +4,16 @@
 \alias{get_messages}
 \title{Get messages from a channel.}
 \usage{
-get_messages(x, n, api_id, api_hash, env = "r-telescraper")
+get_messages(x, api_id, api_hash, n = 0, env = "r-telescraper")
 }
 \arguments{
 \item{x}{Character vector containing the channel links.}
 
-\item{n}{Number of messages to be scraped}
-
 \item{api_id}{The API ID required for authentication.}
 
 \item{api_hash}{The API hash required for authentication.}
+
+\item{n}{Number of messages to be scraped. Defauls is 0, which means all.}
 
 \item{env}{The name of the Python virtual environment to be used, when not "r-telescrapeR}
 }
