@@ -65,7 +65,7 @@ async def scrape_messages(client, channel_id):
 async def scrape_more_channels(client, channel_links):
     all_messages = []
     for channel_id in channel_links:
-        print(f"Scrape Messages from {channel_id}")
+        print(f"Scrape messages from {channel_id}")
         messages = await scrape_messages(client, channel_id)
         all_messages.extend(messages)
         await asyncio.sleep(2)
