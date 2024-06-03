@@ -4,7 +4,7 @@
 \alias{get_messages}
 \title{Get messages from a channel.}
 \usage{
-get_messages(x, api_id, api_hash, n = 0, env = "r-telescraper")
+get_messages(x, api_id, api_hash, n = 0, env = "r-telescrapeR")
 }
 \arguments{
 \item{x}{Character vector containing the channel links.}
@@ -18,7 +18,7 @@ get_messages(x, api_id, api_hash, n = 0, env = "r-telescraper")
 \item{env}{The name of the Python virtual environment to be used, when not "r-telescrapeR}
 }
 \value{
-A data frame with the following columns: channel_name, channel_id, title, message_id, message_views, date, sender_id, message_text
+Returns a data frame.
 }
 \description{
 This function sets the channel links, API ID, and API hash, and then retrieves messages from the specified channel using the provided API credentials.

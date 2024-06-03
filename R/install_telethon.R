@@ -20,11 +20,10 @@
 #' # Install Telethon package in an existing environment named "r-telescrapeR"
 #' install_telethon(envname = "r-telescrapeR", new_env = FALSE)
 #' }
-install_telethon <- function(...,
-                             envname = "r-telescrapeR",
+install_telethon <- function(envname = "r-telescrapeR",
                              new_env = identical(envname, "r-telescrapeR")) {
   if (new_env && reticulate::virtualenv_exists(envname)) {
     reticulate::virtualenv_remove(envname)
   }
-  reticulate::py_install(packages = "telethon", envname = envname, ...)
+  reticulate::py_install(packages = "telethon", envname = envname)
 }

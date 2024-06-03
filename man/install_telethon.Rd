@@ -5,7 +5,6 @@
 \title{Install the Telethon package in a specified Python virtual environment.}
 \usage{
 install_telethon(
-  ...,
   envname = "r-telescrapeR",
   new_env = identical(envname, "r-telescrapeR")
 )
