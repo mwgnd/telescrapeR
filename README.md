@@ -1,6 +1,8 @@
 # telescrapeR
 Work in Progress.
 
+With TelescrapeR you can download text messages from public Telegram groups and channels. The package has only one useful function so far (`get_messages()`), which should work. I created the package to extract messages from channels conveniently in R, and to learn how to create R packages. Since this is my first package, maybe not everything runs smoothly. Any suggestions are welcome.
+
 
 ## Installation
 
@@ -8,7 +10,7 @@ Work in Progress.
 devtools::install_github("mwgnd/telescrapeR")
 ```
 ### Reticulate
-As this package uses the telethon python library via reticulate (R Interface to Python), you should have python installed on your machine. This could also be done by the reticulate package. You will also need to create a virtual environment in which the telethon python library will be installed. install_telethon() will create an environment for you called "r-telescrapeR" with telethon installed.
+As this package uses the telethon python library via reticulate (R Interface to Python), you should have python installed on your machine. This could also be done by the Reticulate package. You will also need to create a virtual environment in which the Telethon Rython library will be installed. `install_telethon()` will create an environment for you called "r-telescrapeR" with Telethon installed.
 
 ```r
 install.packages("reticulate")
