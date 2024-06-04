@@ -4,7 +4,17 @@
 \alias{get_messages}
 \title{Get messages from a channel.}
 \usage{
-get_messages(x, api_id, api_hash, n = 0, env = "r-telescrapeR")
+get_messages(
+  x,
+  api_id,
+  api_hash,
+  n = 0,
+  env = "r-telescrapeR",
+  reverse = FALSE,
+  min_id = 0,
+  max_id = 0,
+  offset_date = NULL
+)
 }
 \arguments{
 \item{x}{Character vector containing the channel links.}
@@ -16,9 +26,17 @@ get_messages(x, api_id, api_hash, n = 0, env = "r-telescrapeR")
 \item{n}{Number of messages to be scraped. Defauls is 0, which means all.}
 
 \item{env}{The name of the Python virtual environment to be used, when not "r-telescrapeR}
+
+\item{reverse}{The default order (FALSE) is from newest to oldest, but this behaviour can be changed with the reverse parameter (TRUE)}
+
+\item{min_id}{All the messages with a lower (older) messege_id or equal to this will be excluded .}
+
+\item{max_id}{All the messages with a higher (newer) message_id or equal to this will be excluded.}
+
+\item{offset_date}{Offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.}
 }
 \value{
-Returns a data frame.
+A data frame.
 }
 \description{
 This function sets the channel links, API ID, and API hash, and then retrieves messages from the specified channel using the provided API credentials.

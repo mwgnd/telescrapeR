@@ -8,13 +8,18 @@ def client(api_id, api_hash):
   client = TelegramClient('session_name', api_id, api_hash)
   
   
-def scrape_messages(channel, n):
+def scrape_messages(channel, n, reverse, min_id, max_id, offset_date):
 
-    async def scrape(client, channel, n):
+    async def scrape(client, channel, n, reverse, min_id, max_id, offset_date):
         messages = []
         counter = 0
 
-        async for message in client.iter_messages(channel, wait_time=3):
+        async for message in client.iter_messages(channel, 
+                                                  wait_time=3, 
+                                                  reverse = reverse, 
+                                                  min_id = min_id, 
+                                                  max_id = max_id,
+                                                  offset_date = offset_date):
             if message.text is None:
                 continue
             
@@ -60,7 +65,7 @@ def scrape_messages(channel, n):
 
     with client:
         try:
-            messages_list = client.loop.run_until_complete(scrape(client, channel, n))
+            messages_list = client.loop.run_until_complete(scrape(client, channel, n, reverse, min_id, max_id, offset_date))
         except telethon.errors.FloodWaitError as e:
             print("FloodWaitError: Sleep for " + str(e.seconds))
             time.sleep(e.seconds)
