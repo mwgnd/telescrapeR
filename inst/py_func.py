@@ -17,23 +17,35 @@ def scrape_messages(channel, n):
         async for message in client.iter_messages(channel, wait_time=3):
             if message.text is None:
                 continue
-
+            
             counter += 1
-
-            sender_id = message.peer_id.channel_id if message.is_channel else message.peer_id.user_id
-            raw_text = "" if message.raw_text is None else message.raw_text.replace("\'", "\"")
+            
             title = "" if message.is_private else message.chat.title
-            views = "" if message.is_private else message.views
-
+            views = "" if message.views is None else message.views
+            peer_id = message.peer_id.channel_id if message.is_channel else message.peer_id.user_id
+            sender_id =  peer_id if message.from_id is None else message.from_id.user_id
+            raw_text = "" if message.raw_text is None else message.raw_text.replace("\'", "\"")
+            reply_to_message_id = message.reply_to_msg_id if message.is_reply else ""
+            
+            forward_from = ""
+            try:
+              forward_from = message.forward.chat.username.lower() if message.forward.chat.username else ""
+            except AttributeError:
+              pass    
+            
+            
             messages.append({
-            'channel_name': message.chat.username.lower(),
-            'channel_id': message.chat.id,
+            'chat_name': message.chat.username.lower(),
+            'chat_id': message.chat.id,
             'title': title,
             'message_id': message.id,
+            'is_reply': message.is_reply,
+            'reply_to_message_id': reply_to_message_id,
             'message_views': views,
             'date': str(message.date),
             'sender_id': sender_id,
-            'message_text': raw_text
+            'message_text': raw_text,
+            'forward_from': forward_from
             })
 
             if counter % 100 == 0:
