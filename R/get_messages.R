@@ -21,20 +21,22 @@ get_messages <- function(x,
   reticulate::use_virtualenv(env)
   reticulate::py_run_string(glue("print('Using', '{env}', 'virtual enviroment')"))
 
-  # assign python variables
-  py$channel_links <- x
-  py$api_id <- api_id
-  py$api_hash <- api_hash
-  py$n_limit <- as.integer(n)
-
-  # scrape messages with the python script
-  py_script <- system.file("scrape_messages.py", package = "telescrapeR")
+  # load the python functions
+  py_script <- system.file("py_func.py", package = "telescrapeR")
   reticulate::py_run_file(py_script)
 
-  # transform python to r
-  transform_py <- py_to_r(py$all_messages)
-  # create dataframe with all messages
-  df <- do.call(rbind.data.frame, transform_py)
+  # set the telegram client
+  py$client(api_id, api_hash)
+
+  #scrape messages
+  list_of_messages <- list()
+  for (channel in x) {
+    cat(paste("Scrape messages from", channel), sep = "\n")
+    py_list <- py$scrape_messages(channel, n)
+    list_of_messages <- append(list_of_messages, py_list)
+  }
+  # turn list into a data frame
+  df <- do.call(rbind.data.frame, list_of_messages)
 
   return(df)
 }
