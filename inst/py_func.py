@@ -8,9 +8,10 @@ def client(api_id, api_hash):
   client = TelegramClient('session_name', api_id, api_hash)
   
   
-def scrape_messages(channel, n, reverse, min_id, max_id, offset_date):
+def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
 
-    async def scrape(client, channel, n, reverse, min_id, max_id, offset_date):
+    async def scrape(client, channel, n, reverse, min_id, max_id, offset_date, verbose):
+      
         messages = []
         counter = 0
 
@@ -22,7 +23,7 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date):
                                                   offset_date = offset_date):
             if message.text is None:
                 continue
-            
+    
             counter += 1
             
             title = "" if message.is_private else message.chat.title
@@ -52,9 +53,9 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date):
             'message_text': raw_text,
             'forward_from': forward_from
             })
-
-            if counter % 100 == 0:
-                print(f"Messages scraped: {counter}")
+            verbose = verbose
+            if verbose and counter % 100 == 0:
+                print(f"Progress: {counter} Messages")
 
             if n > 0 and counter >= n:
                 break
@@ -65,10 +66,10 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date):
 
     with client:
         try:
-            messages_list = client.loop.run_until_complete(scrape(client, channel, n, reverse, min_id, max_id, offset_date))
+            messages_list = client.loop.run_until_complete(scrape(client, channel, n, reverse, min_id,
+                                                                   max_id, offset_date, verbose))
         except telethon.errors.FloodWaitError as e:
             print("FloodWaitError: Sleep for " + str(e.seconds))
             time.sleep(e.seconds)
 
     return messages_list
-

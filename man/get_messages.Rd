@@ -2,42 +2,60 @@
 % Please edit documentation in R/get_messages.R
 \name{get_messages}
 \alias{get_messages}
-\title{Get messages from a channel.}
+\title{Get messages from channels.}
 \usage{
 get_messages(
   x,
-  api_id,
-  api_hash,
   n = 0,
-  env = "r-telescrapeR",
   reverse = FALSE,
   min_id = 0,
   max_id = 0,
-  offset_date = NULL
+  offset_date = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
-\item{x}{Character vector containing the channel links.}
-
-\item{api_id}{The API ID required for authentication.}
-
-\item{api_hash}{The API hash required for authentication.}
+\item{x}{Character vector containing the `Telegram`` entities. Could be in the format of "t.me/xxx", https://t.me/xxx" or "xxx".}
 
 \item{n}{Number of messages to be scraped. Defauls is 0, which means all.}
 
-\item{env}{The name of the Python virtual environment to be used, when not "r-telescrapeR}
-
-\item{reverse}{The default order (FALSE) is from newest to oldest, but this behaviour can be changed with the reverse parameter (TRUE)}
+\item{reverse}{The default order (FALSE) is from newest to oldest, but this behaviour can be changed with the reverse parameter (TRUE).}
 
 \item{min_id}{All the messages with a lower (older) messege_id or equal to this will be excluded .}
 
 \item{max_id}{All the messages with a higher (newer) message_id or equal to this will be excluded.}
 
 \item{offset_date}{Offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.}
+
+\item{verbose}{If TRUE, the function will print the channels and the number of messages being scraped.}
 }
 \value{
 A data frame.
 }
 \description{
-This function sets the channel links, API ID, and API hash, and then retrieves messages from the specified channel using the provided API credentials.
+\code{get_messages()} retrieves messages from the specified channels.
+}
+\examples{
+\dontrun{
+# Start TelescrapeR
+start_ts(api_id, api_hash)
+
+# Scrape all messages from channels
+df <- get_messages(x)
+
+# Scrape 100 messages from channels (newest to oldest)
+df <- get_messages(x, n = 100)
+
+# Scrape 100 messages from channels (oldest to newest)
+df <- get_messages(x, n = 100, reverse = TRUE)
+
+# Scrape messages sent before a certain date
+df <- get_messages(x, offset_date = "2024-05-24")
+
+# Scrape messages sent after a certain date
+df <- get_messages(x, offset_date = "2024-05-24", reverse = TRUE)
+}
+}
+\seealso{
+\code{\link[=start_ts]{start_ts()}}, \code{\link[=update_messages]{update_messages()}}
 }
