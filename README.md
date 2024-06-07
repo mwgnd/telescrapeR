@@ -1,4 +1,7 @@
 # telescrapeR
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/mwgnd/telescrapeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwgnd/telescrapeR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 Work in Progress.
 
 With `TelescrapeR` you can download text messages from public Telegram groups and channels. The package has only two useful functions so far (`get_messages` and `update_messages`),both of which are expected to work. I created the package to extract messages from channels conveniently in `R`, and to learn how to create `R` packages. Since this is my first package, maybe not everything runs smoothly. Any suggestions are welcome.
