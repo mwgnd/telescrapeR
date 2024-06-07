@@ -12,13 +12,13 @@ install_telethon(
 \arguments{
 \item{envname}{The name of the Python virtual environment where Telethon will be installed. Default is "r-telescrapeR".}
 
-\item{new_env}{Logical indicating whether a new virtual environment should be created. Default is `TRUE` if `envname` is "r-telescrapeR".}
+\item{new_env}{Logical indicating whether a new virtual environment should be created. Default is \code{TRUE} if \code{envname} is "r-telescrapeR".}
 }
 \description{
 This function installs the Telethon package, a Python library for Telegram API, in the specified Python virtual environment. If a new environment is requested and an environment with the same name already exists, it will be removed before installation.
 }
 \details{
-The function installs the Telethon package in the specified Python virtual environment. If `new_env` is `TRUE` and the specified environment already exists, it will be removed before installation to ensure a clean setup.
+The function installs the Telethon package in the specified Python virtual environment. If \code{new_env} is \code{TRUE} and the specified environment already exists, it will be removed before installation to ensure a clean setup.
 }
 \examples{
 \dontrun{

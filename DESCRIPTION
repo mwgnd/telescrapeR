@@ -6,6 +6,7 @@ Author: Manuel Weigand
 Maintainer: Manuel Weigand <mwgnd@mailbox.org>
 Description: An R package for scraping messages from Telegram Channels and Groups.
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 LazyData: true
 Imports:
 	reticulate,

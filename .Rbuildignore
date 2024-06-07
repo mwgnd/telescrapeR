@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^session_name\.session$
 ^test_case\.R$
+^\.github$
