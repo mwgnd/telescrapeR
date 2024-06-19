@@ -47,6 +47,7 @@ start_ts <- function(api_id,
 #' @param offset_date  Offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.
 #' @param verbose If TRUE, the function will print the channels and the number of messages being scraped.
 #' @importFrom reticulate py
+#' @importFrom stringr str_extract_all
 #' @return A data frame.
 #' @seealso [start_ts()], [update_messages()]
 #' @examples
@@ -92,8 +93,18 @@ get_messages <- function(x,
                                   verbose)
     list_of_messages <- append(list_of_messages, py_list)
   }
-  # turn list into a data frame
+  #turn list into a data frame
   df <- do.call(rbind.data.frame, list_of_messages)
+  # change types
+  df$message_views <- as.integer(df$message_views)
+  df$reply_to_message_id <- as.integer(df$reply_to_message_id)
+  df$date <- as.POSIXct(df$date, format = "%Y-%m-%d %H:%M:%S")
+
+  # extract links in text messages
+  pattern <- "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+  df$links_in_text <- sapply(stringr::str_extract_all(df$message_text, pattern),
+                             function(x) paste(x, collapse = "|"))
+
 
   if (verbose) {cat("Scraped", nrow(df), "messages.\n")}
 

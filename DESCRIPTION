@@ -10,6 +10,7 @@ Roxygen: list(markdown = TRUE)
 LazyData: true
 Imports:
 	reticulate,
-	glue
+	glue,
+	stringr
 RoxygenNote: 7.3.1
 License: GPL (>= 3)

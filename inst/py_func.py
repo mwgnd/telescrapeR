@@ -2,12 +2,14 @@ import telethon
 import time
 import asyncio
 from telethon import TelegramClient
+from telethon.tl.types import MessageEntityTextUrl
 
+# set the global client variable
 def client(api_id, api_hash):
   global client
   client = TelegramClient('session_name', api_id, api_hash)
   
-  
+# funtion to scrape messages
 def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
 
     async def scrape(client, channel, n, reverse, min_id, max_id, offset_date, verbose):
@@ -21,7 +23,7 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
                                                   min_id = min_id, 
                                                   max_id = max_id,
                                                   offset_date = offset_date):
-            if message.text is None:
+            if not message.text:
                 continue
     
             counter += 1
@@ -37,9 +39,15 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
             try:
               forward_from = message.forward.chat.username.lower() if message.forward.chat.username else ""
             except AttributeError:
-              pass    
+              pass
             
-            
+            if message.entities is None:
+              links_inline = ""
+            else:
+              links_entity = [entity.url for entity in message.entities if isinstance(entity, MessageEntityTextUrl)]
+              links_inline = '|'.join(links_entity)
+              
+        
             messages.append({
             'chat_name': message.chat.username.lower(),
             'chat_id': message.chat.id,
@@ -51,8 +59,10 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
             'date': str(message.date),
             'sender_id': sender_id,
             'message_text': raw_text,
-            'forward_from': forward_from
+            'forward_from': forward_from,
+            'links_inline': links_inline
             })
+            
             verbose = verbose
             if verbose and counter % 100 == 0:
                 print(f"Progress: {counter} Messages")
@@ -73,3 +83,6 @@ def scrape_messages(channel, n, reverse, min_id, max_id, offset_date, verbose):
             time.sleep(e.seconds)
 
     return messages_list
+    
+    
+
