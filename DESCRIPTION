@@ -11,6 +11,8 @@ LazyData: true
 Imports:
 	reticulate,
 	glue,
-	stringr
+	stringr,
+	dplyr,
+	rlang
 RoxygenNote: 7.3.1
 License: GPL (>= 3)

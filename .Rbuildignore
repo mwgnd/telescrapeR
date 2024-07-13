@@ -3,4 +3,5 @@
 ^LICENSE\.md$
 ^session_name\.session$
 ^test_case\.R$
+^snowball_function\.R$
 ^\.github$

@@ -41,14 +41,14 @@ start_ts <- function(api_id,
 #'
 #' @param x Character vector containing the `Telegram`` entities. Could be in the format of "t.me/xxx", https://t.me/xxx" or "xxx".
 #' @param n Number of messages to be scraped. Defauls is 0, which means all.
-#' @param reverse The default order (FALSE) is from newest to oldest, but this behaviour can be changed with the reverse parameter (TRUE).
-#' @param min_id All the messages with a lower (older) messege_id or equal to this will be excluded .
+#' @param reverse The default order (FALSE) is from newest to oldest, but this behavior can be changed with the reverse parameter (TRUE).
+#' @param min_id All the messages with a lower (older) message_id or equal to this will be excluded .
 #' @param max_id All the messages with a higher (newer) message_id or equal to this will be excluded.
-#' @param offset_date  Offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.
+#' @param offset_date  Optional offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.
 #' @param verbose If TRUE, the function will print the channels and the number of messages being scraped.
 #' @importFrom reticulate py
 #' @importFrom stringr str_extract_all
-#' @return A data frame.
+#' @return A data frame containing scraped Telegram messages.
 #' @seealso [start_ts()], [update_messages()]
 #' @examples
 #' \dontrun{
@@ -171,6 +171,87 @@ update_messages <- function(x,
   }
 
 }
+
+#' Perform a snowball sampling scrape based on forwarded messages.
+#'
+#' Given a seed list of Telegram channels or groups, this function iteratively collects
+#' messages and identifies new channels or groups based on forwarded messages and scrapes them.
+#' The function collects all messages of a channel if no offset date is set.
+#'
+#' @param x A Seedlist specifying Telegram channels or users to start the snowball sampling. Character vector containing the `Telegram`` entities. Could be in the format of "t.me/xxx", https://t.me/xxx" or "xxx".
+#' @param batch_size Numeric, number of new entities to scrape in each iteration.
+#' @param iterations Numeric, number of iterations to perform for the snowball sampling.
+#' @param offset_date Optional offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.
+#' @param reverse Logical, whether to scrape messages in reverse order. The default order (FALSE) is from newest to oldest, but this behavior can be changed with the reverse parameter (TRUE).
+#' @importFrom dplyr filter mutate
+#' @importFrom rlang .data
+#' @return A data frame containing scraped Telegram messages with additional columns 'seed' indicating
+#'         if the message originated from the seed list, and 'iteration' denoting the snowball iteration.
+#' @details The function \code{snowball_scrape} starts by scraping an initial seed list of channels or groups.
+#' It then iterates multiple times, searching for new scraping candidates based on forwarded messages. Each iteration retrieves
+#' a batch of new entities and appends them to the existing data frame. The candidate selection is based on a calculated score, which is
+#' calculated using the formula:  \deqn{score = n \times \log(w + 1)}
+#' where \eqn{n} is the total number of occurrences of forwarded messages from a specific channel collected in the current iteration,
+#' and \eqn{w} is the number of different unique channels in the current iteration that forwarded messages from this specific channel.
+#'
+#' If you have a initial seed list of 50 Telegram channels or groups and you set the batch size to 25 and the number of iterations to 3,
+#' you will scrape a total of 125 channels or groups. It will start by scraping the initial seed list of 50 channels or groups,
+#' then it will evaluate the forwarded messages and select the 25 channels or groups with the highest score not in the seed list.
+#' Then it will scrape these 25 channels or groups and evaluate the forwarded messages in this batch, and so on for multiple iterations.
+#' If the batch size is higher than the number of new entities found in the forwarded messages of an iteration, the function will scrape all the new entities found.
+#' @examples
+#' \dontrun{
+#' # Perform snowball sampling on a seed list of Telegram channels
+#' snowball_scrape(c("channel1", "channel2"), batch_size = 10, iterations = 3)
+#' }
+#'
+#' @export
+
+
+
+snowball_scrape <- function(x, batch_size, iterations, offset_date = NULL, reverse = FALSE) {
+
+  cat("Scraping seedlist...", "\n")
+  # scraping the initial seedlist
+  df <- telescrapeR::get_messages(x, offset_date = offset_date, reverse = reverse) |>
+    mutate(seed = TRUE,
+           iteration = 0)
+
+  cat("Scraping seedlist complete. Starting snowball iterations...", "\n")
+
+  # starting the iterations after seedlist
+  for (i in 1:iterations) {
+
+    cat("Starting iteration", i, "of", iterations, "\n","Analyzing forwarded messages...", "\n")
+    # searching for new scraping candidates based on a calculated score of forwarded messages
+    candidates <- df |>
+      filter(.data$iteration == i - 1) |>
+      filter(.data$forward_from != "") |>
+      dplyr::group_by(.data$forward_from) |>
+      dplyr::summarise(
+        count = dplyr::n(),
+        unique_chat_ids = dplyr::n_distinct(.data$chat_id)
+      ) |>
+      mutate(score = .data$count * log(.data$unique_chat_ids + 1)) |>
+      filter(!.data$forward_from %in% df$chat_name) |>
+      dplyr::arrange(dplyr::desc(.data$score)) |>
+      dplyr::slice_head(n = batch_size) |>
+      dplyr::pull(.data$forward_from)
+
+    cat("Scraping new entities...", "\n")
+    # scraping the new entities
+    new_df <- get_messages(candidates, offset_date = offset_date, reverse = reverse) |>
+      dplyr::mutate(seed = FALSE,
+             iteration = i)
+    # binding the new entities to the existing dataframe
+    df <- dplyr::bind_rows(df, new_df)
+
+  }
+
+  cat("Scraping finished. Total number of messages:", nrow(df), "messages from", length(unique(df$chat_name)), "channels.", "\n")
+  return(df)
+}
+
 
 
 

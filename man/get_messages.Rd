@@ -19,18 +19,18 @@ get_messages(
 
 \item{n}{Number of messages to be scraped. Defauls is 0, which means all.}
 
-\item{reverse}{The default order (FALSE) is from newest to oldest, but this behaviour can be changed with the reverse parameter (TRUE).}
+\item{reverse}{The default order (FALSE) is from newest to oldest, but this behavior can be changed with the reverse parameter (TRUE).}
 
-\item{min_id}{All the messages with a lower (older) messege_id or equal to this will be excluded .}
+\item{min_id}{All the messages with a lower (older) message_id or equal to this will be excluded .}
 
 \item{max_id}{All the messages with a higher (newer) message_id or equal to this will be excluded.}
 
-\item{offset_date}{Offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.}
+\item{offset_date}{Optional offset date (messages previous to this date will be retrieved). Use reverse for messages newer to this date.}
 
 \item{verbose}{If TRUE, the function will print the channels and the number of messages being scraped.}
 }
 \value{
-A data frame.
+A data frame containing scraped Telegram messages.
 }
 \description{
 \code{get_messages()} retrieves messages from the specified channels.
